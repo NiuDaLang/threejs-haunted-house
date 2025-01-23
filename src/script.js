@@ -5,6 +5,14 @@ import GUI from 'lil-gui'
 import { Sky } from 'three/examples/jsm/Addons.js'
 import { FontLoader } from 'three/examples/jsm/Addons.js'
 import { TextGeometry } from 'three/examples/jsm/Addons.js'
+import Stats from 'stats.js'
+
+/**
+ * Stats
+ */
+const stats = new Stats()
+stats.showPanel(0)
+document.body.appendChild(stats.dom)
 
 /**
  * Base
@@ -53,7 +61,6 @@ floor_nor_gl.wrapT = THREE.RepeatWrapping
 const grave1_diff = textureLoader.load('./grave1/seaside_rock_diff_1k.webp')
 const grave1_arm = textureLoader.load('./grave1/seaside_rock_arm_1k.webp')
 const grave1_normal = textureLoader.load('./grave1/seaside_rock_nor_gl_1k.webp')
-const grave1_disp = textureLoader.load('./grave1/seaside_rock_disp_1k.png')
 
 grave1_diff.colorSpace = THREE.SRGBColorSpace
 
@@ -222,13 +229,13 @@ house.add(roof)
 // Door
 for(let i = 0; i < 2; i++){
     const door = new THREE.Mesh(
-        new THREE.BoxGeometry(0.55,1.5,0.1, 100, 100, 5),
+        new THREE.BoxGeometry(0.55,1.5,0.1,1,1,1),
         new THREE.MeshStandardMaterial({
             map: door_diff,
             aoMap: door_arm,
             roughnessMap: door_arm,
             metalnessMap: door_arm,
-            normalMap: door_normal
+            normalMap: door_normal,
         })
     )
     door.position.x = - door.geometry.parameters.width / 2 + i * door.geometry.parameters.width * 1.02
@@ -311,7 +318,6 @@ for(let i = 0; i < count * 3; i++){
                 roughnessMap: grave1_arm,
                 metalnessMap: grave1_arm,
                 normalMap: grave1_normal,
-                displacementMap: grave1_disp,
             })
         )
     } 
@@ -432,7 +438,7 @@ for(let i = 0; i < 3; i++) {
 
 }
 /**
- * Shadows
+ * Shadowshaunted-house
  */
 // Cast Shadow
 directionalLight.castShadow = true
@@ -608,6 +614,8 @@ const timer = new Timer()
 
 const tick = () =>
 {
+    stats.begin()
+    
     // Timer
     timer.update()
     const elapsedTime = timer.getElapsed()
@@ -642,6 +650,8 @@ const tick = () =>
 
     // Call tick again on the next frame
     window.requestAnimationFrame(tick)
+
+    stats.end()
 }
 
 tick()
